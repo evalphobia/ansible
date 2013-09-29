@@ -1,0 +1,5 @@
+---
+dependencies:
+  - { role: nginx }
+  - { role: python2.7 }
+  - { role: uwsgi }

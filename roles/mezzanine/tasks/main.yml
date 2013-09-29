@@ -1,0 +1,47 @@
+---
+- name: "Create application environments"
+  raw: >
+    su -l {{ app.user }} -c "virtualenv ~/{{ app_name }}"
+  with_items: application_repositories
+
+- name: "Install Mezzanine modules"
+  raw: >
+    su -l {{ app.user }} -c "~/{{ app_name }}/bin/pip install {{ item }}"
+  with_items:
+    - mezzanine
+    - south
+
+- name: "Create Mezzanine project"
+  command: >
+    creates=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}
+    chdir=/home/{{ app.user }}/{{ app_name }}
+    bin/mezzanine-project {{ app_name }}
+
+- name: "Set Database"
+  lineinfile: >
+    dest=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}/settings.py
+    regexp='^(\s*"ENGINE": "django\.db\.backends\.).*",'
+    line='\1sqlite3",'
+    backrefs=yes
+
+- name: "Create Database"
+  command: >
+    chdir=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}
+    creates=dev.db
+    ../bin/python manage.py createdb --noinput
+
+- name: "Collect static files"
+  command: >
+    chdir=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}
+    creates=static/css/
+    ../bin/python manage.py collectstatic --noinput
+
+- name: "Copy Mezzanine's uwsgi.ini"
+  template: >
+    src=uwsgi.ini.j2
+    dest=/home/{{ app.user }}/{{ app_name }}/uwsgi.ini
+    owner={{ app.user }}
+    group={{ app.user }}
+
+- include: ../../uwsgi/tasks/symlink_ini.yml app_name={{ app_name }}
+- include: ../../nginx/tasks/add_conf.yml app_name={{ app_name }}

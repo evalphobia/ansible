@@ -1,0 +1,32 @@
+# for {{ app_name }} 
+
+upstream _{{ app_name }} {
+    server {{ app_host }}:{{ app_port }};
+}
+
+server {
+    listen 80;
+    server_name {{ app_host }};
+
+    access_log  /var/log/nginx/{{ app_name }}.access.log  main;
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+
+    location ~ /static/.*\.(jpg|jpeg|gif|png|swf|css|js|inc|ico|htm|html)$ {
+        root /home/{{ app.user }}/{{ app_name }}/{{ app_name }}/;
+        expires 7d;
+        break;
+    }
+
+    location / {
+        try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+        uwsgi_pass _{{ app_name }};
+        include uwsgi_params;
+    }
+}

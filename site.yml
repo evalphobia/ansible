@@ -25,3 +25,4 @@
   roles:
     - python2.7
     - uwsgi
+    - mezzanine
