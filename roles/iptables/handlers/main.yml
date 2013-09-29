@@ -1,0 +1,3 @@
+---
+- name: restart iptables
+  service: name={{ _iptables.service }} state=restarted

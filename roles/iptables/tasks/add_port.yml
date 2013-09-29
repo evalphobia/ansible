@@ -1,0 +1,8 @@
+---
+- name: add port:{{ port }}
+  lineinfile: >
+    dest={{ _iptables.rule }}
+    insertbefore='^## end port setting'
+    line='-A INPUT -m state --state NEW -m tcp -p tcp --dport {{ port }} -j ACCEPT'
+    regexp='^-A INPUT -m state --state NEW -m tcp -p tcp --dport {{ port }} -j ACCEPT'
+  notify: restart iptables

@@ -2,6 +2,7 @@
 LF: "\n"
 
 locale: jp
+ssh_port: 22 
 
 ntp: 
   jp:
@@ -10,6 +11,18 @@ ntp:
   en_US:
     - 'time-nw.nist.gov'
     - 'ntp.nasa.gov' 
+
+my_networks:
+  - "172.16.150.0/24"   # for your network
+  - "10.0.2.0/24"       # for vagrant private network
+
+iptables:
+  Debian:
+    service: iptables-persistent
+    rule: /etc/iptables/rules.v4
+  RedHat: 
+    service: iptables
+    rule: /etc/sysconfig/iptables
 
 dns:
  use_public: True
