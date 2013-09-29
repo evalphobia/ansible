@@ -10,3 +10,10 @@
     - rpmbuild
     - disable_ipv6
     - { role: iptables, _iptables: "${iptables.${ansible_os_family}}" }
+
+- name: Load Balancer
+  hosts: loadbalancers
+  user: vagrant
+  sudo: yes
+  roles:
+    - nginx

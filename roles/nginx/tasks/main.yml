@@ -1,0 +1,32 @@
+---
+- include: Debian.yml
+  when: ansible_os_family == "Debian"
+- include: CentOS.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Add daemon user to nginx group 
+  user: >
+    name={{ app.user }}
+    groups=nginx
+    append=yes
+
+- name: Copy nginx config file
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify:
+    - reload nginx
+
+- name: Check nginx config is valid
+  action: command nginx -t
+  register: confIsValid
+
+- name: start nginx server {{ confIsValid }}
+  service: name=nginx state=started
+  when: confIsValid == True
+
+- include: >
+    ../../iptables/tasks/add_port.yml
+    port={{ item }}
+    _iptables="${iptables.${ansible_os_family}}"
+  with_items:
+    - 80
+    - 443
