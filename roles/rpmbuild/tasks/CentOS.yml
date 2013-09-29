@@ -1,0 +1,33 @@
+---
+- name: Install tolls for build
+  yum: name={{ item }} state=installed
+  with_items:
+    - gettext
+    - rpm-build
+    - gcc
+
+- name: Create rpmbuild-only user
+  user: name={{ build.user }} uid={{ build.uid }}
+
+- name: Create directories for rpmbuild
+  file: >
+    path=/home/{{ build.user }}/{{ item }}
+    state=directory
+    owner={{ build.user }}
+    group={{ build.user }}
+    mode=0755
+  with_items:
+    - rpmbuild
+    - rpmbuild/BUILD
+    - rpmbuild/RPMS
+    - rpmbuild/SOURCES
+    - rpmbuild/SPECS
+    - rpmbuild/SRPMS
+
+- name: Create .rpmmacros
+  lineinfile: >
+    dest=/home/{{ build.user }}/.rpmmacros
+    create=yes
+    insertafter=EOF
+    line='%_topdir %(echo $HOME)/rpmbuild {{ LF }}%debug_package %{nil} {{ LF }}%_smp_mflags  -j1'
+    regexp='^%_topdir'

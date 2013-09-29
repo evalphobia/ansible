@@ -7,3 +7,4 @@
     - common
     - locale
     - application_user
+    - rpmbuild

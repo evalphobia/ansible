@@ -20,3 +20,7 @@ dns:
 app:
   user: www
   uid: 1501
+
+build: 
+  user: rpmbuild
+  uid: 1500
