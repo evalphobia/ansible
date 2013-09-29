@@ -1,0 +1,32 @@
+---
+- name: Create user for application
+  user: >
+    name={{ app.user }} 
+    uid={{ app.uid }}
+
+- name: "Create ssh directory"
+  file: >
+    path=/home/{{ app.user }}/.ssh
+    state=directory
+    owner={{ app.user }}
+    group={{ app.user }}
+    mode=0700
+
+- name: "Create known_hosts"
+  command: >
+    creates=/home/{{ app.user }}/.ssh/known_hosts
+    touch /home/{{ app.user }}/.ssh/known_hosts
+- name: "Set known_hosts permission"
+  file: >
+    path=/home/{{ app.user }}/.ssh/known_hosts
+    owner={{ app.user }}
+    group={{ app.user }}
+    mode=0600
+
+- name: "Copy ssh key"
+  copy: >
+    src=id_rsa
+    dest=/home/{{ app.user }}/.ssh/id_rsa
+    owner={{ app.user }}
+    group={{ app.user }}
+    mode=0600
