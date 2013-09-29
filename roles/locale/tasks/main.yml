@@ -1,0 +1,4 @@
+---
+- name: Configure locale file
+  template: src=i18n_{{ locale }} dest=/etc/sysconfig/i18n
+  when: ansible_os_family == "RedHat"
