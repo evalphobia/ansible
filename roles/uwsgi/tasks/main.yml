@@ -1,0 +1,34 @@
+---
+- name: "Create uwsgi enviroment directory"
+  file: >
+    path=/home/{{ app.user }}/uwsgi
+    state=directory
+    owner=root
+    group=root
+    mode=0755
+
+- name: "Create uwsgi virtualenv"
+  command: >
+    creates=/home/{{ app.user }}/uwsgi/bin/activate
+    virtualenv /home/{{ app.user }}/uwsgi
+
+- name: "Install uwsgi module"
+  pip: >
+    virtualenv=/home/{{ app.user }}/uwsgi/bin
+    name=uwsgi
+
+- name: "Create uwsgi worker directory"
+  file: >
+    path=/etc/uwsgi/vassals
+    state=directory
+    owner=root
+    group={{ app.user }}
+    mode=0775
+
+- name: "Create uwsgi.conf"
+  template: >
+    src=uwsgi.conf
+    dest=/etc/init/uwsgi.conf
+    owner=root
+    group=root
+  notify: start uwsgi
