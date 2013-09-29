@@ -1,0 +1,13 @@
+---
+python_ver: 2.7.5
+setuptools_ver: 1.1.6
+required_pkg_RedHat: 
+  - expat-devel
+  - db4-devel
+  - gdbm-devel
+  - sqlite-devel
+  - readline-devel
+  - zlib-devel
+  - bzip2-devel
+  - openssl-devel
+  - ncurses-devel

@@ -1,0 +1,60 @@
+---
+- name: install dependency packages
+  yum: name={{ item }} state=installed
+  with_items: required_pkg_RedHat
+
+
+# install python
+- name: download python source
+  get_url: > 
+    url=http://www.python.org/ftp/python/{{ python_ver }}/Python-{{ python_ver }}.tar.bz2
+    dest=/home/{{ build.user }}/rpmbuild/SOURCES/Python-{{ python_ver }}.tar.bz2
+
+- name: Copy spec file
+  copy: >
+    src=python27-{{ python_ver }}.spec
+    dest=/home/{{ build.user }}/rpmbuild/SPECS/python27-{{ python_ver }}.spec
+
+- name: extract source
+  command: >
+    creates=/home/{{ build.user }}/rpmbuild/RPMS//{{ ansible_architecture }}/python27-{{ python_ver }}-1.{{ ansible_architecture }}.rpm
+    su -l {{ build.user }} -c "QA_RPATHS=$[ 0x0001|0x0010 ] rpmbuild -ba ~/{{ build.user }}/SPECS/python27-{{ python_ver }}.spec"
+
+- name: install rpm
+  yum: >
+    state=installed
+    name=/home/{{ build.user }}/rpmbuild/RPMS/{{ ansible_architecture }}/python27-{{ python_ver }}-1.{{ ansible_architecture }}.rpm 
+-  yum: >
+    state=installed
+    name=/home/{{ build.user }}/rpmbuild/RPMS/{{ ansible_architecture }}/python27-devel-{{ python_ver }}-1.{{ ansible_architecture }}.rpm
+
+
+# install setuptools
+- name: download setuptools source
+  get_url: > 
+    url=https://pypi.python.org/packages/source/s/setuptools/setuptools-{{ setuptools_ver }}.tar.gz
+    dest=/home/{{ build.user }}/rpmbuild/SOURCES/setuptools-{{ setuptools_ver }}.tar.gz
+
+- name: Copy spec file
+  copy: >
+    src=setuptools-{{ setuptools_ver }}.spec
+    dest=/home/{{ build.user }}/rpmbuild/SPECS/setuptools-{{ setuptools_ver }}.spec
+
+- name: extract source
+  command: >
+    creates=/home/{{ build.user }}/rpmbuild/RPMS/noarch/python27-setuptools-{{ setuptools_ver }}-1.noarch.rpm
+    su -l {{ build.user }} -c "QA_RPATHS=$[ 0x0001|0x0010 ] rpmbuild -ba ~/{{ build.user }}/SPECS/setuptools-{{ setuptools_ver }}.spec"
+
+- name: install rpm
+  yum: name=/home/{{ build.user }}/rpmbuild/RPMS/noarch/python27-setuptools-{{ setuptools_ver }}-1.noarch.rpm state=installed
+
+- name: install pip
+  command: >
+    creates=/usr/bin/pip-2.7
+    easy_install-2.7 pip
+
+- name: install PyPI modules
+  pip: name={{ item }}
+  with_items:
+    - virtualenv
+    - virtualenvwrapper

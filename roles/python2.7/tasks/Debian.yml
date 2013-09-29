@@ -1,0 +1,27 @@
+---
+- name: install python2.7 from apt
+  apt: name=python2.7 state=installed
+
+- name: download setuptools
+  get_url: >
+    url=https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+    dest=/usr/local/src/ez_setup.py
+- name: install setuptools
+  command: >
+    chdir=/usr/local/src
+    /usr/local/bin/python2.7 ez_setup.py
+
+- name: download pip
+  get_url: >
+    url=https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+    dest=/usr/local/src/get-rip.py
+- name: install pip
+  command: >
+    chdir=/usr/local/src
+    /usr/local/bin/python2.7 get-rip.py
+
+- name: install virtualenv
+  command: pip install {{ item }}
+  with_items:
+    - virtualenv
+    - virtualenvwrapper

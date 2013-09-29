@@ -17,3 +17,10 @@
   sudo: yes
   roles:
     - nginx
+
+- name: Application Server
+  hosts: appservers
+  user: vagrant
+  sudo: yes
+  roles:
+    - python2.7
