@@ -1,0 +1,19 @@
+---
+LF: "\n"
+
+locale: jp
+
+ntp: 
+  jp:
+    - 'ntp.nict.jp'
+    - 'ntp.ring.gr.jp'
+  en_US:
+    - 'time-nw.nist.gov'
+    - 'ntp.nasa.gov' 
+
+dns:
+ use_public: True
+ publics:
+  - "8.8.8.8"
+  - "8.8.4.4"
+

@@ -1,0 +1,35 @@
+---
+
+- name: "Enable google public dns"
+  lineinfile: >
+    dest=/etc/resolv.conf
+    insertbefore='^nameserver'
+    line='nameserver {{ item }}'
+    regexp='^nameserver {{ item }}'
+  with_items: dns.publics
+  when: dns.use_public == True
+
+
+- yum: name={{ item }} state=installed
+  with_items: packages_common
+  when: ansible_os_family == "RedHat"
+- yum: name={{ item }} state=installed
+  with_items: packages_RedHat
+  when: ansible_os_family == "RedHat"
+
+- apt: name={{ item }} state=installed
+  with_items: packages_common
+  when: ansible_os_family == "Debian"
+- apt: name={{ item }} state=installed
+  with_items: packages_Debian
+  when: ansible_os_family == "Debian"
+
+- name: Configure ntp file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=true
+  tags: ntp
+

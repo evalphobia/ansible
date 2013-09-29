@@ -1,0 +1,7 @@
+---
+- name: For all node
+  hosts: all
+  user: vagrant
+  sudo: yes
+  roles:
+    - common

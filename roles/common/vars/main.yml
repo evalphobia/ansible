@@ -1,0 +1,20 @@
+---
+packages_common: 
+  - make
+  - automake
+  - libtool
+  - bison
+  - sudo
+  - sysstat
+  - ntp
+  - tree
+  - curl
+  - postfix
+  - git
+  - lsof
+packages_Debian: 
+  - build-essential
+  - vim-nox
+packages_RedHat: 
+  - yum-plugin-fastestmirror
+  - vim-enhanced
