@@ -8,3 +8,4 @@
     - locale
     - application_user
     - rpmbuild
+    - disable_ipv6
