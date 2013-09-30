@@ -14,8 +14,9 @@
 
 - name: "Install uwsgi module"
   pip: >
-    virtualenv=/home/{{ app.user }}/uwsgi/bin
+    virtualenv=/home/{{ app.user }}/uwsgi
     name=uwsgi
+  notify: start uwsgi
 
 - name: "Create uwsgi worker directory"
   file: >
