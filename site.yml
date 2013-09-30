@@ -25,4 +25,5 @@
   roles:
     - python2.7
     - uwsgi
+    - python_applications
     - mezzanine

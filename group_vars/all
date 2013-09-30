@@ -33,6 +33,16 @@ dns:
 app:
   user: www
   uid: 1501
+  repositories:
+    - name: "example_project"
+      url: "git@bitbucket.org:<your account here>/<target repository foo>"
+      host: "127.0.0.1"
+      port: "8000"
+    - name: "my_site"
+      url: "git@bitbucket.org:<your account here>/<target repository bar>"
+      host: "127.0.0.1"
+      port: "8001"
+
 
 build: 
   user: rpmbuild

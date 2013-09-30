@@ -1,0 +1,16 @@
+---
+- name: "Get Repositories RSA public-key"
+  raw: >
+    ssh-keygen -F {{ item }} | grep -q '^{{ item }}' \
+    || ssh-keyscan {{ item }} 2> /dev/null >> /home/{{ app.user }}/.ssh/known_hosts
+  with_items: __trusted_hosts
+
+- include: >
+    create_apps.yml
+
+### this isn't working ansible ver1.3.2
+### 
+#- include: >
+#    create_apps.yml
+#    item={{ item }}
+#  with_items: app.repositories

@@ -1,0 +1,28 @@
+---
+- name: "Create application environments"
+  raw: >
+    su -l {{ app.user }} -c "virtualenv ~/{{ item.name }}"
+  with_items: app.repositories
+
+- name: "Checkout repositories"
+  raw: >
+    su -l {{ app.user }} -c "test -e ~/{{ item.name }}/project || git clone {{ item.url }}  ~/{{ item.name }}/project"
+  with_items: app.repositories
+
+- name: "Install PyPI modules"
+  raw: >
+    su -l {{ app.user }} -c "test -e ~/{{ item.name }}/project/requirements.txt \
+                             && ~/{{ item.name }}/bin/pip install -r ~/{{ item.name }}/project/requirements.txt \
+                             || :"
+  with_items: app.repositories
+
+- name: "Copy apps uwsgi.ini"
+  template: >
+    src=uwsgi.ini
+    dest=/home/{{ app.user }}/{{ item.name }}/uwsgi.ini
+    owner={{ app.user }}
+    group={{ app.user }}
+  with_items: app.repositories
+
+- include: ../../uwsgi/tasks/symlink_ini.yml _repos={{ app.repositories }}
+- include: ../../nginx/tasks/add_conf.yml _repos={{ app.repositories }}
