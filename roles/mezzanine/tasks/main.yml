@@ -36,6 +36,14 @@
     creates=static/css/
     ../bin/python manage.py collectstatic --noinput
 
+- name: "Set Owner"
+  file: >
+    path=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}
+    owner={{ app.user }}
+    group={{ app.user }}
+    state=directory
+    recurse=yes
+
 - name: "Copy Mezzanine's uwsgi.ini"
   template: >
     src=uwsgi.ini.j2
