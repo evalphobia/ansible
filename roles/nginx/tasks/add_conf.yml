@@ -2,11 +2,12 @@
 - name: "Create Application confg"
   template: >
     src=app-uwsgi.conf.j2
-    dest=/etc/nginx/conf.d/{{ app_name }}.conf
+    dest=/etc/nginx/conf.d/{{ item.name }}.conf
     owner={{ app.user }}
     group={{ app.user }}
-  notify: reload nginx
+  with_items: _repos
 
 - name: Check nginx config is valid
   action: command nginx -t
-  register: nginxConfIsValid
+
+- include: ../handlers/main.yml

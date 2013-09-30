@@ -1,15 +1,15 @@
 [uwsgi]
-chdir = /home/www/{{ app_name }}
-module = "{{ app_name }}.wsgi:application"
-env = DJANGO_SETTINGS_MODULE={{ app_name }}.settings
-wsgi-file = {{ app_name }}/wsgi.py
+chdir = /home/www/{{ item.name }}
+module = "{{ item.name }}.wsgi:application"
+env = DJANGO_SETTINGS_MODULE={{ item.name }}.settings
+wsgi-file = {{ item.name }}/wsgi.py
 processes = 1
 max-requests = 5000
 chmod-socket = 666
 master = True
 vacuum = True
-socket = {{ app_host }}:{{ app_port }}
-home = /home/www/{{ app_name }}
+socket = {{ item.host }}:{{ item.port }}
+home = /home/www/{{ item.name }}
 uid = {{ app.user }}
 gid = {{ app.user }}
-daemonize = /var/log/uwsgi-{{ app_name }}.log
+daemonize = /var/log/uwsgi-{{ item.name }}.log

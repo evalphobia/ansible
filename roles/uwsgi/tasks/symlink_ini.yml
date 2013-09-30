@@ -1,9 +1,11 @@
 ---
 - name: "SymLink uwsgi.ini"
   file: >
-    src=/home/{{ app.user }}/{{ app_name }}/uwsgi.ini
-    dest=/etc/uwsgi/vassals/{{ app_name }}.ini
+    src=/home/{{ app.user }}/{{ item.name }}/uwsgi.ini
+    dest=/etc/uwsgi/vassals/{{ item.name }}.ini
     owner={{ app.user }}
     group={{ app.user }}
     state=link
-  notify: restart uwsgi
+  with_items: _repos
+
+- include: ../handlers/main.yml

@@ -1,4 +1,5 @@
 ---
-app_name: blog
-app_host: 127.0.0.1
-app_port: 8081
+__app:
+  name: blog
+  host: 127.0.0.1
+  port: 8081

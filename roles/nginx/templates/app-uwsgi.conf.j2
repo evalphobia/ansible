@@ -1,14 +1,14 @@
-# for {{ app_name }} 
+# for {{ item.name }} 
 
-upstream _{{ app_name }} {
-    server {{ app_host }}:{{ app_port }};
+upstream _{{ item.name }} {
+    server {{ item.host }}:{{ item.port }};
 }
 
 server {
     listen 80;
-    server_name {{ app_host }};
+    server_name {{ item.host }};
 
-    access_log  /var/log/nginx/{{ app_name }}.access.log  main;
+    access_log  /var/log/nginx/{{ item.name }}.access.log  main;
 
     location = /favicon.ico {
         log_not_found off;
@@ -16,7 +16,7 @@ server {
     }
 
     location ~ /static/.*\.(jpg|jpeg|gif|png|swf|css|js|inc|ico|htm|html)$ {
-        root /home/{{ app.user }}/{{ app_name }}/{{ app_name }}/;
+        root /home/{{ app.user }}/{{ item.name }}/{{ item.name }}/;
         expires 7d;
         break;
     }
@@ -26,7 +26,7 @@ server {
     }
 
     location @proxy_to_app {
-        uwsgi_pass _{{ app_name }};
+        uwsgi_pass _{{ item.name }};
         include uwsgi_params;
     }
 }

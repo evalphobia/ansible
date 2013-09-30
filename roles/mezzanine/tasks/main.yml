@@ -1,44 +1,43 @@
 ---
 - name: "Create application environments"
   raw: >
-    su -l {{ app.user }} -c "virtualenv ~/{{ app_name }}"
-  with_items: application_repositories
+    su -l {{ app.user }} -c "virtualenv ~/{{ __app.name }}"
 
 - name: "Install Mezzanine modules"
   raw: >
-    su -l {{ app.user }} -c "~/{{ app_name }}/bin/pip install {{ item }}"
+    su -l {{ app.user }} -c "~/{{ __app.name }}/bin/pip install {{ item }}"
   with_items:
     - mezzanine
     - south
 
 - name: "Create Mezzanine project"
   command: >
-    creates=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}
-    chdir=/home/{{ app.user }}/{{ app_name }}
-    bin/mezzanine-project {{ app_name }}
+    creates=/home/{{ app.user }}/{{ __app.name }}/{{ __app.name }}
+    chdir=/home/{{ app.user }}/{{ __app.name }}
+    bin/mezzanine-project {{ __app.name }}
 
 - name: "Set Database"
   lineinfile: >
-    dest=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}/settings.py
+    dest=/home/{{ app.user }}/{{ __app.name }}/{{ __app.name }}/settings.py
     regexp='^(\s*"ENGINE": "django\.db\.backends\.).*",'
     line='\1sqlite3",'
     backrefs=yes
 
 - name: "Create Database"
   command: >
-    chdir=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}
+    chdir=/home/{{ app.user }}/{{ __app.name }}/{{ __app.name }}
     creates=dev.db
     ../bin/python manage.py createdb --noinput
 
 - name: "Collect static files"
   command: >
-    chdir=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}
+    chdir=/home/{{ app.user }}/{{ __app.name }}/{{ __app.name }}
     creates=static/css/
     ../bin/python manage.py collectstatic --noinput
 
 - name: "Set Owner"
   file: >
-    path=/home/{{ app.user }}/{{ app_name }}/{{ app_name }}
+    path=/home/{{ app.user }}/{{ __app.name }}/{{ __app.name }}
     owner={{ app.user }}
     group={{ app.user }}
     state=directory
@@ -47,9 +46,11 @@
 - name: "Copy Mezzanine's uwsgi.ini"
   template: >
     src=uwsgi.ini.j2
-    dest=/home/{{ app.user }}/{{ app_name }}/uwsgi.ini
+    dest=/home/{{ app.user }}/{{ item.name }}/uwsgi.ini
     owner={{ app.user }}
     group={{ app.user }}
+  with_items:
+    - $__app
 
-- include: ../../uwsgi/tasks/symlink_ini.yml app_name={{ app_name }}
-- include: ../../nginx/tasks/add_conf.yml app_name={{ app_name }}
+- include: ../../uwsgi/tasks/symlink_ini.yml _repos="[ $__app ]"
+- include: ../../nginx/tasks/add_conf.yml _repos="[ $__app ]"
