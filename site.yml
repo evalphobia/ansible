@@ -28,3 +28,11 @@
     - uwsgi
     - python_applications
     - mezzanine
+
+- name: Database Server
+  hosts: dbservers
+  user: vagrant
+  sudo: yes
+  roles:
+    - { role: mongodb, _server: true }
+

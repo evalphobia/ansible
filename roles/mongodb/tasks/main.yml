@@ -1,0 +1,16 @@
+---
+- include: Debian.yml
+  when: ansible_os_family == "Debian"
+- include: CentOS.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Start mongod
+  service: name=mongod state=started
+  when: _server is defined
+
+#- include: >
+#    ../../iptables/tasks/add_port.yml
+#    port={{ item }}
+#    _iptables="${iptables.${ansible_os_family}}"
+#  with_items:
+#    - 27017

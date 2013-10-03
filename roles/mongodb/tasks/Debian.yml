@@ -1,0 +1,16 @@
+---
+- name: Set mongodb GPG key for apt
+  command: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+
+- name: Set mongodb repository for apt
+  lineinfile: >
+    dest=/etc/apt/sources.list.d/mongodb.list
+    create=yes
+    insertafter=EOF
+    line='deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'
+    regexp='^deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'
+
+- name: Install mongodb
+  apt: >
+    update_cache=yes
+    pkg=mongodb-10gen
