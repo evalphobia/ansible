@@ -1,4 +1,5 @@
 ---
 dependencies:
+  - { role: application_user }
   - { role: python2.7 }
   - { role: uwsgi }
