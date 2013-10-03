@@ -1,0 +1,43 @@
+---
+- name: "Check shared directory at host"
+  sudo: no
+  local_action: >
+    file
+    path={{ vagrant.dir }}/{{ app.user }}
+    state=directory
+
+- name: "Check shared directory at guest"
+  stat: path=/home/{{ app.user }}/
+  register: __share_dir
+
+- name: "Backup original directory"
+  command: mv /home/{{ app.user }}/ /home/_original_{{ app.user}}/
+  when: __share_dir.stat.isdir is defined and __share_dir.stat.isdir == true
+
+- name: "Create shared directory"
+  file: >
+    path=/home/{{ app.user }}/
+    state=directory
+    owner={{ app.user }}
+    group={{ app.user }}
+    mode=0775
+
+- name: "Add vagrant conf to share directory"
+  lineinfile: >
+    dest=/vagrant/Vagrantfile
+    insertafter='config.vm.synced_folder "../data", "/vagrant_data"'
+    line='  config.vm.synced_folder "{{ app.user }}/", "/home/{{ app.user }}", owner: "{{ app.user }}", group: "{{ app.user }}"'
+    regexp='^  config.vm.synced_folder "{{ app.user }}/", "/home/{{ app.user }}", owner: "{{ app.user }}", group: "{{ app.user }}"$'
+  register: vagrantfile
+
+- name: "Restart vagrant guest"
+  sudo: no
+  local_action: >
+    command
+    chdir={{ vagrant.dir }}
+    vagrant reload 
+  when: vagrantfile.changed
+
+- name: "Copy original directory"
+  command: rsync -a /home/_original_{{ app.user}}/ /home/{{ app.user }}/
+  when: __share_dir.stat.isdir is defined and __share_dir.stat.isdir == true

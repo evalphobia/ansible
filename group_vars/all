@@ -43,7 +43,9 @@ app:
       host: "127.0.0.1"
       port: "8001"
 
-
 build: 
   user: rpmbuild
   uid: 1500
+
+vagrant:
+  dir: /Users/<your name>/development/vagrant/centos  # set vagrant VM directory here, using for vm reload, shared dirs
