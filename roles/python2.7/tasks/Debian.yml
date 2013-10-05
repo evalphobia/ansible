@@ -1,26 +1,28 @@
 ---
-- name: install python2.7 from apt
-  apt: name=python2.7 state=installed
+- name: Install python2.7 from apt
+  apt: name={{ item }} state=installed
+  environment: env.apt 
+  with_items:
+    - python2.7
+    - python2.7-dev
 
-- name: download setuptools
+- name: Download setuptools
   get_url: >
     url=https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
     dest=/usr/local/src/ez_setup.py
-- name: install setuptools
-  command: >
-    chdir=/usr/local/src
-    /usr/local/bin/python2.7 ez_setup.py
 
-- name: download pip
-  get_url: >
-    url=https://raw.github.com/pypa/pip/master/contrib/get-pip.py
-    dest=/usr/local/src/get-rip.py
-- name: install pip
+- name: Install setuptools
   command: >
+    creates=/usr/local/bin/easy_install-2.7
     chdir=/usr/local/src
-    /usr/local/bin/python2.7 get-rip.py
+    /usr/bin/python2.7 ez_setup.py
 
-- name: install virtualenv
+- name: Install pip by easy_install
+  command: >
+    creates=/usr/local/bin/pip-2.7
+    /usr/local/bin/easy_install-2.7 pip
+
+- name: Install virtualenv by pip
   command: pip install {{ item }}
   with_items:
     - virtualenv

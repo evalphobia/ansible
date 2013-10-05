@@ -49,3 +49,7 @@ build:
 
 vagrant:
   dir: /Users/<your name>/development/vagrant/centos  # set vagrant VM directory here, using for vm reload, shared dirs
+
+env:
+  apt:
+    LC_ALL: 'en_US.UTF-8'

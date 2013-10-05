@@ -1,0 +1,12 @@
+---
+- name: Install common packages (1/2)
+  yum: name={{ item }} state=installed
+  with_items: packages_common
+
+- name: Install common packages (2/2)
+  yum: name={{ item }} state=installed
+  with_items: packages_RedHat
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=true
+  tags: ntp

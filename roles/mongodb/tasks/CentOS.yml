@@ -7,3 +7,7 @@
 - name: install mongodb-server by yum
   yum: name=mongo-10gen-server state=installed
   when: _server is defined
+
+- name: Start mongod
+  service: name=mongod state=started
+  when: _server is defined

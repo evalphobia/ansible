@@ -1,7 +1,9 @@
 ---
 - name: install iptables-persistent
   apt: name={{ _iptables.service }} state=installed
+  environment: env.apt 
   when: ansible_os_family == "Debian"
+
 - name: install iptables
   yum: name={{ _iptables.service }} state=installed
   when: ansible_os_family == "RedHat"

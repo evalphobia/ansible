@@ -1,0 +1,21 @@
+---
+- name: Add locale to locale.gen
+  lineinfile: >
+    dest=/etc/locale.gen
+    insertafter=EOF
+    line="{{ __locales[locale] }} UTF-8"
+    regexp="^{{ __locales[locale] }} UTF-8"
+
+- name: Generate locale
+  command: locale-gen
+
+- name: Add locale envs
+  lineinfile: >
+    dest=/etc/profile
+    insertafter=EOF
+    line='export {{ item }}={{ __locales[locale] }}'
+    regexp='^export {{ item }}={{ __locales[locale] }}'
+  with_items:
+    - "LANG"
+    - "LANGUAGE"
+    - "LC_ALL"

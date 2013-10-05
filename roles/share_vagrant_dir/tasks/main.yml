@@ -10,9 +10,17 @@
   stat: path=/home/{{ app.user }}/
   register: __share_dir
 
+- name: "Check original directory at guest"
+  stat: path=/home/_original_{{ app.user}}/
+  register: __original_dir
+
 - name: "Backup original directory"
   command: mv /home/{{ app.user }}/ /home/_original_{{ app.user}}/
-  when: __share_dir.stat.isdir is defined and __share_dir.stat.isdir == true
+  when: >
+    __share_dir.stat.isdir is defined 
+    and __share_dir.stat.isdir == true
+    and __original_dir.stat.exists == false
+  register: __move_dir
 
 - name: "Create shared directory"
   file: >
@@ -40,4 +48,8 @@
 
 - name: "Copy original directory"
   command: rsync -a /home/_original_{{ app.user}}/ /home/{{ app.user }}/
-  when: __share_dir.stat.isdir is defined and __share_dir.stat.isdir == true
+  when: >
+    __share_dir.stat.isdir is defined 
+    and __share_dir.stat.isdir == true
+    and __original_dir.stat.isdir is defined 
+    and __original_dir.stat.isdir == true

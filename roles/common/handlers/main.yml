@@ -1,4 +1,8 @@
 ---
 - name: restart ntp
   service: name=ntpd state=restarted
+  when: ansible_os_family == "RedHat"
 
+- name: restart ntp
+  service: name=ntp state=restarted
+  when: ansible_os_family == "Debian"

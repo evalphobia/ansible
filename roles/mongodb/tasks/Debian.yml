@@ -7,10 +7,16 @@
     dest=/etc/apt/sources.list.d/mongodb.list
     create=yes
     insertafter=EOF
-    line='deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'
-    regexp='^deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'
+    line='deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen'
+    regexp='^deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen'
 
 - name: Install mongodb
   apt: >
     update_cache=yes
-    pkg=mongodb-10gen
+    name=mongodb-10gen
+    state=installed
+  environment: env.apt
+
+- name: Start mongodb
+  service: name=mongodb state=started
+  when: _server is defined

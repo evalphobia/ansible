@@ -1,16 +1,22 @@
 - name: get Debian Codename
   action: command lsb_release  --short --codename
   register: debian_codename
+
 - name: set nginx repository key for apt
-  action: command "wget http://nginx.org/keys/nginx_signing.key  -qO -|apt-key add -"
-  when: ansible_os_family == "Debian"
+  raw: 'wget http://nginx.org/keys/nginx_signing.key  -qO -|apt-key add -'
+
 - name: set nginx repository url for apt
   lineinfile:
-    dest=/etc/apt/sources.list
+    dest=/etc/apt/sources.list.d/nginx.list
+    create=yes
     regexp=''
     insertafter=EOF
-    line="deb http://nginx.org/packages/debian/ {{ debian_codename }} nginx
-    {{ LF }}deb-src http://nginx.org/packages/debian/ {{ debian_codename }} nginx"
+    line="deb http://nginx.org/packages/debian/ {{ debian_codename.stdout }} nginx
+    {{ LF }}deb-src http://nginx.org/packages/debian/ {{ debian_codename.stdout }} nginx"
 
 - name: install nginx by apt
-  apt: name=nginx state=installed
+  apt: >
+    name=nginx 
+    state=installed
+    update_cache=yes
+  environment: env.apt 
