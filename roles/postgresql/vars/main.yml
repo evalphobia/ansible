@@ -1,0 +1,6 @@
+---
+__repo:
+  name: 'pgdg-centos93'
+  file: 'pgdg-93-centos.repo'
+  key: '/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-93'
+  url: 'http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm'

@@ -1,0 +1,25 @@
+---
+- name: get Debian Codename
+  action: command lsb_release  --short --codename
+  register: debian_codename
+
+- name: set pgdg GPG key for apt
+  raw: 'wget http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc -qO -|apt-key add -'
+
+- name: Set mongodb repository for apt
+  lineinfile: >
+    dest=/etc/apt/sources.list.d/pgdg.list
+    create=yes
+    insertafter=EOF
+    line='deb http://apt.postgresql.org/pub/repos/apt/ {{ debian_codename.stdout }}-pgdg main'
+    regexp='^deb http://apt.postgresql.org/pub/repos/apt/ {{ debian_codename.stdout }}-pgdg main'
+
+- name: Install postgresql
+  apt: >
+    update_cache=yes
+    name=postgresql-9.3
+    state=installed
+  environment: env.apt
+
+- name: Start postgresql
+  service: name=postgresql-9.3 state=started

@@ -4,8 +4,9 @@
   user: vagrant
   sudo: yes
   roles:
-    - common
     - locale
+    - common
+    - yum_repositories
     - application_user
     - share_vagrant_dir
     - rpmbuild
@@ -34,5 +35,6 @@
   user: vagrant
   sudo: yes
   roles:
+    - { role: postgresql, _server: true }
     - { role: mongodb, _server: true }
 

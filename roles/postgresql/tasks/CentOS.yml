@@ -1,0 +1,28 @@
+--- 
+- include: ../../yum_repositories/tasks/add_repo.yml 
+  vars: 
+    _repo:
+      name: "{{ __repo.name }}"
+      file: "{{ __repo.file }}"
+      url: "{{ __repo.url }}"
+      key: "{{ __repo.key }}"
+
+- name: Exclude postgresql packages from base rpository
+  lineinfile: >
+    dest=/etc/yum.repos.d/CentOS-Base.repo
+    insertafter="name=CentOS-.releasever - Base"
+    line='exclude=postgresql*'
+    regexp='^exclude=postgresql*'
+
+- name: Install PostgreSQL Client libs
+  yum: >
+    name={{ item }}
+    state=installed
+    enablerepo=pgdg93
+  with_items:
+    - postgresql93
+    - postgresql93-libs
+  when: _server is not defined
+
+- include: CentOS_server_setting.yml 
+  when: _server is defined

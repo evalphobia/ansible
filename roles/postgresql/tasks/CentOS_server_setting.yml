@@ -1,0 +1,37 @@
+--- 
+- name: install postgresql-server by yum
+  yum: >
+    name=postgresql93-server
+    state=installed
+    enablerepo=pgdg93
+
+- name: Check PostgreSQL data dir
+  stat: path=/var/lib/pgsql/9.3/data/base
+  register: __pgdata
+
+- name: Create new data with initdb
+  command: /etc/init.d/postgresql-9.3 initdb
+  when: __pgdata.stat.exists == false
+
+- name: Add trusted-networks to pg_hba.conf file 
+  lineinfile: >
+    dest=/var/lib/pgsql/9.3/data/pg_hba.conf
+    insertafter=EOF
+    line='host    all    all    {{ item }}    md5'
+    regexp='^host    all    all    {{ item }}    md5'
+  with_items: my_networks
+
+- name: Copy postgresql config file
+  copy: >
+    src=postgresql.conf
+    dest=/var/lib/pgsql/9.3/data/postgresql.conf
+    backup=yes
+
+- name: Make Symlink to log dir
+  file: >
+    src=/var/lib/pgsql/9.3/data/pg_log
+    dest=/var/log/pg_log
+    state=link
+
+- name: Start postgresql 
+  service: name=postgresql-9.3 state=started
