@@ -26,10 +26,24 @@
     group={{ app.user }}
     mode=0775
 
-- name: "Create uwsgi.conf"
+- name: "Check init"
+  stat: path=/sbin/telinit
+  register: __init
+
+- name: "Create uwsgi.conf for upstart"
   template: >
     src=uwsgi.conf
     dest=/etc/init/uwsgi.conf
     owner=root
     group=root
   notify: start uwsgi
+  when: __init.stat.isdir is defined and __init.stat.isdir == true
+
+- name: "Create uwsgi init script for sysvinit"
+  template: >
+    src=uwsgi.sh
+    dest=/etc/init.d/uwsgi
+    owner=root
+    group=root
+  notify: start uwsgi
+  when: __init.stat.islnk is defined and __init.stat.islnk == true
