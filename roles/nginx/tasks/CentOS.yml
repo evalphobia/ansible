@@ -2,4 +2,4 @@
   copy: src=nginx.repo dest=/etc/yum.repos.d/nginx.repo
 
 - name: install nginx by yum
-  yum: name=nginx state=installed
+  yum: name=nginx state=installed enablerepo=nginx

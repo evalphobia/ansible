@@ -1,0 +1,16 @@
+---
+- name: Check the installed repository 
+  raw: rpm -qa|grep '^{{ _repo.name }}'
+  ignore_errors: yes
+  register: __installed
+
+- name: Add a repository
+  yum: name={{ _repo.url }} state=installed
+  when: __installed|failed
+
+- name: Add a key
+  command: rpm --import {{ _repo.key }}
+  when: __installed|failed
+
+- name: Disable in default
+  command: sed -e 's@^enabled\s*=\s*1@enabled=0@g' -i /etc/yum.repos.d/{{ _repo.file }}

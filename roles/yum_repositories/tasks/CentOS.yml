@@ -1,0 +1,9 @@
+---
+- include: add_repo.yml 
+  vars: 
+    _repo:
+      name: "{{ item.name }}"
+      file: "{{ item.file }}"
+      url: "{{ item.url }}"
+      key: "{{ item.key }}"
+  with_items: __repos
