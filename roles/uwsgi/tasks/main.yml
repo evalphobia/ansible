@@ -37,7 +37,7 @@
     owner=root
     group=root
   notify: start uwsgi
-  when: __init.stat.isdir is defined and __init.stat.isdir == true
+  when: __init.stat.isreg is defined and __init.stat.isreg == true
 
 - name: "Create uwsgi init script for sysvinit"
   template: >
