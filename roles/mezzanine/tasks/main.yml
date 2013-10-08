@@ -9,6 +9,7 @@
   with_items:
     - mezzanine
     - south
+    - mezzanine-pagedown
 
 - name: "Create Mezzanine project"
   command: >
