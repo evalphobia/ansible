@@ -213,13 +213,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files 
 #-f INSTALLED_OBJECTS
-/usr/lib/python2.7/site-packages/pkg_resources.py
 /usr/lib/python2.7/site-packages/easy_install.py
-/usr/lib/python2.7/site-packages/pkg_resources.pyc
 /usr/lib/python2.7/site-packages/easy_install.pyc
+/usr/lib/python2.7/site-packages/easy_install.pyo
+/usr/lib/python2.7/site-packages/pkg_resources.py
+/usr/lib/python2.7/site-packages/pkg_resources.pyc
+/usr/lib/python2.7/site-packages/pkg_resources.pyo
 /usr/lib/python2.7/site-packages/setuptools/
-/usr/lib/python2.7/site-packages/setuptools/tests/
-/usr/lib/python2.7/site-packages/setuptools/command/
 /usr/lib/python2.7/site-packages/setuptools-1.1.6-py2.7.egg-info/
 /usr/lib/python2.7/site-packages/_markerlib/
 /usr/bin/easy_install-2.7
