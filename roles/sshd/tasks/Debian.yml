@@ -1,0 +1,10 @@
+---
+- name: Install xinetd packages
+  apt: name=xinetd state=installed
+  environment: env.apt
+
+- name: Set sftp
+  lineinfile: >
+    dest=/etc/ssh/sshd_config_{{ ssh_port }}
+    regexp='#Subsystem sftp /usr/lib/openssh/sftp-server'
+    line='Subsystem sftp /usr/lib/openssh/sftp-server'

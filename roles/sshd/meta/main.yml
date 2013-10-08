@@ -1,0 +1,3 @@
+---
+dependencies:
+  - { role: iptables, _iptables: "${iptables.${ansible_os_family}}" }

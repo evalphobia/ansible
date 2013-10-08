@@ -1,0 +1,11 @@
+---
+- name: stop sshd
+  service: name=ssh state=stopped
+  when: ansible_os_family == "Debian"
+
+- name: stop sshd
+  service: name=sshd state=stopped
+  when: ansible_os_family == "RedHat"
+
+- name: restart xinetd
+  service: name=xinetd state=restarted

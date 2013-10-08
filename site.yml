@@ -12,6 +12,7 @@
     - rpmbuild
     - disable_ipv6
     - { role: iptables, _iptables: "${iptables.${ansible_os_family}}" }
+    - { role: sshd, when: "{{ ssh_port }} != 22" }
 
 - name: Load Balancer
   hosts: loadbalancers

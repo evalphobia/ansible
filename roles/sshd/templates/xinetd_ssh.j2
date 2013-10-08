@@ -1,0 +1,13 @@
+service ssh_{{ ssh_port }}
+{
+        disable         = no
+        socket_type     = stream
+        protocol        = tcp
+        user            = root
+        wait            = no
+        nice            = 0
+        server          = /usr/sbin/sshd
+        server_args     = -i -f /etc/ssh/sshd_config_{{ ssh_port }}
+        log_on_success  += USERID DURATION
+        log_on_failure  += USERID
+}

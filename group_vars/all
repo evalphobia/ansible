@@ -2,7 +2,7 @@
 LF: "\n"
 
 locale: jp
-ssh_port: 22 
+ssh_port: 10022
 
 ntp: 
   jp:

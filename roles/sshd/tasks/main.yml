@@ -1,0 +1,32 @@
+---
+- name: Copy sshd_config
+  template: >
+    src=sshd_config.j2
+    dest=/etc/ssh/sshd_config_{{ ssh_port }}
+    backup=yes
+  notify:
+    - stop sshd
+    - restart xinetd
+
+- include: Debian.yml
+  when: ansible_os_family == "Debian"
+- include: CentOS.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Add Services
+  lineinfile: >
+    dest=/etc/services
+    insertafter=EOF
+    line='ssh_{{ ssh_port }}    {{ ssh_port }}/{{ item }}'
+    regexp='^ssh_{{ ssh_port }}    {{ ssh_port }}/{{ item }}'
+  with_items:
+    - 'tcp'
+    - 'udp'
+
+- name: Copy xinetd config for ssh
+  template: >
+    src=xinetd_ssh.j2
+    dest=/etc/xinetd.d/ssh
+  notify:
+    - stop sshd
+    - restart xinetd

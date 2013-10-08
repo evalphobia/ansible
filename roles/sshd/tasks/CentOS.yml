@@ -1,0 +1,9 @@
+---
+- name: Install xinetd packages
+  yum: name=xinetd state=installed
+
+- name: Set sftp
+  lineinfile: >
+    dest=/etc/ssh/sshd_config_{{ ssh_port }}
+    regexp='#Subsystem sftp /usr/libexec/openssh/sftp-server'
+    line='Subsystem sftp /usr/libexec/openssh/sftp-server'
